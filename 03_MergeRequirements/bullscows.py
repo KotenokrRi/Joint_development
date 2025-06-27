@@ -1,3 +1,4 @@
+import random
 def bullscows(guess: str, secret: str) -> tuple[int, int]:
     """
     Сравнивает догадку и загаданное слово, возвращает количество 'быков' и 'коров'.
@@ -26,3 +27,26 @@ def bullscows(guess: str, secret: str) -> tuple[int, int]:
             secret_list.remove(guess_list[i])
 
     return bulls, cows
+
+
+def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
+    """
+    Основной игровой цикл.
+    - ask: функция для запроса ввода у пользователя.
+    - inform: функция для вывода информации пользователю.
+    - words: список слов для загадывания.
+    """
+    secret = random.choice(words)
+    attempts = 0
+
+    while True:
+        attempts += 1
+        guess = ask("Введите слово: ", words)
+
+        bulls, cows = bullscows(guess, secret)
+
+        inform("Быки: {}, Коровы: {}", bulls, cows)
+
+        if bulls == len(secret):
+            print(f"Вы угадали! Загаданное слово: {secret}. Попыток: {attempts}")
+            return attempts
