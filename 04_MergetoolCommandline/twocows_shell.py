@@ -18,5 +18,24 @@ class TwoCowsShell(cmd.Cmd):
         """Exits the shell on Ctrl+D."""
         return self.do_exit(args)
 
+    def do_list_cows(self, args):
+        """
+        Lists all available cow character names that can be used with the cowsay command.
+        """
+
+        available_cows = cowsay.list_cows()
+
+        print("Available cows:")
+        print(' '.join(available_cows))
+
+    def help_list_cows(self):
+        """
+        Prints the help message for the 'list_cows' command.
+        """
+        print("\nUsage: list_cows")
+        print("Description: Lists all available cowfiles (character names) that can be used.")
+        print("Example: ")
+        print("twocows> list_cows\n")
+
 if __name__ == '__main__':
     TwoCowsShell().cmdloop()
