@@ -28,3 +28,20 @@ def main():
 
     message1 = args.message[0]
     message2 = args.message[1] if len(args.message) > 1 else ""
+
+    # Генерация изображений (здесь финальные исправления)
+    cow1_output = cowsay.cowsay(
+        message=message1,
+        cow=args.cowfile,
+        eyes=args.eye_string,
+        tongue=args.tongue_string,
+        width=args.width
+    )
+
+    cow2_output = cowsay.cowsay(
+        message=message2,
+        cow=args.cowfile2 if args.cowfile2 else 'default',
+        eyes=args.eye_string2 if args.eye_string2 else args.eye_string,
+        tongue=args.tongue_string2 if args.tongue_string2 else args.tongue_string,
+        width=args.width
+    )
