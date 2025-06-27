@@ -45,3 +45,30 @@ def main():
         tongue=args.tongue_string2 if args.tongue_string2 else args.tongue_string,
         width=args.width
     )
+
+    # Объединение и вывод (не меняется)
+    lines1 = cow1_output.split('\n')
+    lines2 = cow2_output.split('\n')
+
+    max_lines = max(len(lines1), len(lines2))
+
+    while len(lines1) < max_lines:
+        lines1.insert(0, '')
+    while len(lines2) < max_lines:
+        lines2.insert(0, '')
+
+    # Находим максимальную ширину для корректного отступа
+    max_width1 = 0
+    if lines1:  # Проверка на случай, если вывод пустой(
+        max_width1 = max(len(line) for line in lines1)
+
+    final_output = []
+    for i in range(max_lines):
+        combined_line = lines1[i].ljust(max_width1) + " " + lines2[i]
+        final_output.append(combined_line)
+
+    print('\n'.join(final_output))
+
+
+if __name__ == '__main__':
+    main()
