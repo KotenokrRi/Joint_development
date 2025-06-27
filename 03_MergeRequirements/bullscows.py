@@ -93,11 +93,25 @@ if __name__ == "__main__":
             return user_input
 
 
+    my_robot = """
+     $thoughts
+      $thoughts
+         [__]
+         (oo)
+        /|__|\\
+       / |  | \\
+      /  |  |  \\
+     |   |  |   |
+     |   |  |   |
+     '---'--'---'
+    """
+
+
     def inform_cli_cowsay(format_string: str, bulls: int, cows: int):
-        # Вместо простого print, используем cowsay
         message = format_string.format(bulls, cows)
-        print(cowsay.cowsay(message))
+        # Используем нашего робота в параметре cow
+        print(cowsay.cowsay(message, cow=my_robot))
 
 
-    # 4. Запускаем игру с новой функцией
+    # Запускаем игру с новой функцией
     gameplay(ask=ask_cli, inform=inform_cli_cowsay, words=valid_words)
