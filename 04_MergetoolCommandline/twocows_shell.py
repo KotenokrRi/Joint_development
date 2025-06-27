@@ -119,6 +119,50 @@ class TwoCowsShell(cmd.Cmd):
         print("Parameters: eyes, tongue, width, cow.")
         print('Example: cowsay "Hello" moose eyes=^^ reply "World" sheep\n')
 
+    def do_cowthink(self, args):
+        """
+        Displays one or two thinking characters.
+        Syntax is identical to 'cowsay'. Use 'help cowsay' for details.
+        """
+
+        original_printer = self.print_two_cows
+        self.print_two_cows = self.print_two_cows_thinking
+
+        try:
+            self.do_cowsay(args)  # Вызываем уже существующий do_cowsay с теми же аргументами
+        finally:
+            # Возвращаем все как было, чтобы не сломать обычный cowsay
+            self.print_two_cows = original_printer
+
+    def print_two_cows_thinking(self, params1, params2):
+        """Вспомогательная функция для отрисовки думающих персонажей."""
+        message1 = params1.pop('message', '')
+        message2 = params2.pop('message', '')
+
+        # Единственное отличие - вызываем cowthink вместо cowsay
+        cow1_output = cowsay.cowthink(message=message1, **params1)
+        cow2_output = cowsay.cowthink(message=message2, **params2)
+
+        # Остальной код для вывода бок о бок точно такой же
+        lines1 = cow1_output.split('\n')
+        lines2 = cow2_output.split('\n')
+        max_lines = max(len(lines1), len(lines2))
+
+        while len(lines1) < max_lines: lines1.insert(0, '')
+        while len(lines2) < max_lines: lines2.insert(0, '')
+
+        max_width1 = max(len(line) for line in lines1) + 1 if lines1 else 0
+
+        for i in range(max_lines):
+            print(lines1[i].ljust(max_width1) + lines2[i])
+
+    def help_cowthink(self):
+        """Prints the help message for the 'cowthink' command."""
+        print("\nDisplays one or two thinking characters.")
+        print("The syntax is identical to the 'cowsay' command.")
+        print("Please use 'help cowsay' for detailed usage instructions.\n")
+
+
 
 if __name__ == '__main__':
     TwoCowsShell().cmdloop()
