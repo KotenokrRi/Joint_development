@@ -1,6 +1,7 @@
 import random
 import sys
 import urllib.request
+import cowsay
 def bullscows(guess: str, secret: str) -> tuple[int, int]:
     """
     Сравнивает догадку и загаданное слово, возвращает количество 'быков' и 'коров'.
@@ -91,8 +92,12 @@ if __name__ == "__main__":
                 continue
             return user_input
 
-    def inform_cli(format_string: str, bulls: int, cows: int):
-        print(format_string.format(bulls, cows))
 
-    # 4. Запускаем игру
-    gameplay(ask=ask_cli, inform=inform_cli, words=valid_words)
+    def inform_cli_cowsay(format_string: str, bulls: int, cows: int):
+        # Вместо простого print, используем cowsay
+        message = format_string.format(bulls, cows)
+        print(cowsay.cowsay(message))
+
+
+    # 4. Запускаем игру с новой функцией
+    gameplay(ask=ask_cli, inform=inform_cli_cowsay, words=valid_words)
