@@ -24,6 +24,40 @@ async def chat(reader, writer):
         message = data.decode().strip()
         print(f"Received from {addr}: {message}")
 
+    # Разбираем команду
+    command, *args = message.split(None, 1)
+    args = args[0] if args else ""
+
+    # --- Команда LOGIN ---
+    if command == "login":
+        cow_name = args.strip()
+        if cow_name in available_cows:
+            clients[writer] = cow_name
+            available_cows.remove(cow_name)
+            writer.write(f"Logged in as {cow_name}\n".encode())
+            await writer.drain()
+        else:
+            writer.write(f"Cow name '{cow_name}' is not available or does not exist.\n".encode())
+            await writer.drain()
+
+    # --- Команда WHO ---
+    elif command == "who":
+        logged_in_users = [name for name in clients.values() if name]
+        writer.write("Logged in users:\n".encode())
+        writer.write("\n".join(logged_in_users).encode() + b'\n')
+        await writer.drain()
+
+    # --- Команда COWS ---
+    elif command == "cows":
+        writer.write("Available cows:\n".encode())
+        writer.write("\n".join(sorted(list(available_cows))).encode() + b'\n')
+        await writer.drain()
+
+        # Проверка, что пользователь залогинен для других команд
+    elif not clients.get(writer):
+        writer.write("Please login first using 'login <cow_name>'.\n".encode())
+        await writer.drain()
+
 
     # Клиент отключился, убираем его из списка
     print(f"Connection from {addr} closed")
