@@ -162,7 +162,22 @@ class TwoCowsShell(cmd.Cmd):
         print("The syntax is identical to the 'cowsay' command.")
         print("Please use 'help cowsay' for detailed usage instructions.\n")
 
+    def do_make_bubble(self, args):
+        """
+        Creates a speech bubble with the given text.
+        """
+        # Здесь нам не нужен сложный парсер, т.к. все аргументы - это просто текст.
+        # shlex.split поможет, если мы захотим передать параметры для bubble, но пока упростим.
+        try:
+            bubble_text = cowsay.make_bubble(text=args)
+            print(bubble_text)
+        except Exception as e:
+            print(f"Error creating bubble: {e}")
 
+    def help_make_bubble(self):
+        """Prints the help message for the 'make_bubble' command."""
+        print("\nUsage: make_bubble [TEXT]")
+        print("Description: Wraps the given text in a speech bubble.\n")
 
 if __name__ == '__main__':
     TwoCowsShell().cmdloop()
