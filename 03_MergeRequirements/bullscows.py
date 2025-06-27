@@ -1,4 +1,6 @@
 import random
+import sys
+import urllib.request
 def bullscows(guess: str, secret: str) -> tuple[int, int]:
     """
     Сравнивает догадку и загаданное слово, возвращает количество 'быков' и 'коров'.
@@ -50,3 +52,47 @@ def gameplay(ask: callable, inform: callable, words: list[str]) -> int:
         if bulls == len(secret):
             print(f"Вы угадали! Загаданное слово: {secret}. Попыток: {attempts}")
             return attempts
+
+if __name__ == "__main__":
+    # 1. Получаем аргументы из командной строки
+    try:
+        dictionary_path = sys.argv[1]
+        word_length = int(sys.argv[2]) if len(sys.argv) > 2 else 5
+    except IndexError:
+        print("Ошибка: Укажите путь к словарю и, опционально, длину слова.")
+        print("Пример: python -m bullscows russian_nouns.txt 5")
+        sys.exit(1)
+
+    # 2. Загружаем и фильтруем слова
+    try:
+        if dictionary_path.startswith("http"):
+            with urllib.request.urlopen(dictionary_path) as response:
+                word_list = response.read().decode('utf-8').splitlines()
+        else:
+            with open(dictionary_path, 'r', encoding='utf-8') as f:
+                word_list = f.read().splitlines()
+    except Exception as e:
+        print(f"Ошибка при загрузке словаря: {e}")
+        sys.exit(1)
+
+    # Фильтруем слова по длине
+    valid_words = [word for word in word_list if len(word) == word_length]
+
+    if not valid_words:
+        print(f"В словаре нет слов длиной {word_length}.")
+        sys.exit(1)
+
+    # 3. Определяем простые функции ask и inform для консоли
+    def ask_cli(prompt: str, valid: list[str] = None):
+        while True:
+            user_input = input(prompt)
+            if valid and user_input not in valid:
+                print("Такого слова нет в словаре или его длина неверна.")
+                continue
+            return user_input
+
+    def inform_cli(format_string: str, bulls: int, cows: int):
+        print(format_string.format(bulls, cows))
+
+    # 4. Запускаем игру
+    gameplay(ask=ask_cli, inform=inform_cli, words=valid_words)
